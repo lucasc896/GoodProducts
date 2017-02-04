@@ -1,3 +1,4 @@
 my.TODO
 *.pyc
 .env
+.cache/
