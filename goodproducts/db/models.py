@@ -24,6 +24,6 @@ class Products(Base):
 
     price = sa.Column(
         'Price', 
-        sa.Float(2),
+        sa.Numeric(2),
         nullable=False,
         doc="Price of product")

@@ -21,9 +21,35 @@ def test_list_all_products(session):
 
     for api_prod in api_result:
         # check has an assigned id value
-        assert api_prod.get('id', None) is not None 
+        assert api_prod.get("id", None) is not None 
         
         # remove auto-incremented id value for comparison
-        api_prod.pop('id')
+        api_prod.pop("id")
         assert api_prod in TEST_PRODUCTS
 
+
+def test_product_exists(session):
+    test_product = TEST_PRODUCTS[0]
+    product_object = models.Products(name=test_product.get("name"),
+                                     price=test_product.get("price"))
+    session.add(product_object)
+    session.flush()
+
+    result = session.query(models.Products)
+    assert result.count() == 1
+    assert result[0].name == test_product.get("name")
+    assert result[0].price == test_product.get("price")
+
+
+
+    assert api.product_exists(session,
+                              test_product.get("name"),
+                              test_product.get("price"))
+
+
+def test_add_new_product(session):
+    api.add_new_product(session, 'test1', 'fa')
+
+
+# def test_add_new_product_bad_params(session):
+#     return True
