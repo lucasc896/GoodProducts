@@ -4,7 +4,7 @@ import ujson
 
 from goodproducts.api import api
 from goodproducts.db.manage import get_session
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from wtforms import Form, StringField, DecimalField, validators
 
 app = Flask("goodproducts")
@@ -28,7 +28,11 @@ def list_all_products():
 
 @app.route('/product/<int:articleid>', methods=['GET'])
 def list_single_product(articleid):
-    return jsonify(api.get_single_product_info(SESSION, articleid))
+    result = api.get_single_product_info(SESSION, articleid)
+    if result[1] == 200:
+        return jsonify(result[0])
+    else:
+        return make_response(*result)
 
 
 @app.route('/product', methods=['POST'])
@@ -49,6 +53,6 @@ def add_product():
             print("Invalid Form Data")
 
     if response:
-        code, msg = response
-        return msg
-    return "nothing"
+        return response[0]
+
+    return make_response(400, "nothing happened. oops.")

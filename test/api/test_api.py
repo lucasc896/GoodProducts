@@ -53,7 +53,7 @@ def test_add_new_product(session):
                                      test_product.get("name"),
                                      test_product.get("price"))
 
-    assert api_result[0] == 201
+    assert api_result[1] == 201
 
     result = session.query(models.Products)
 
@@ -74,11 +74,29 @@ def test_add_new_product_already_exists(session):
                                  test_product.get("name"),
                                  test_product.get("price"))
 
-    assert result[0] == 204
+    assert result[1] == 204
 
 
 def test_add_new_product_db_error(session):
     result = api.add_new_product(session,
                                  'chris',
                                  'not a price')
-    assert result[0] == 400
+    assert result[1] == 400
+
+
+def test_get_single_product_info(session):
+    test_product = TEST_PRODUCTS[0]
+    product_object = models.Products(name=test_product.get("name"),
+                                     price=test_product.get("price"))
+    session.add(product_object)
+    session.flush()
+
+    result = session.query(models.Products).filter(models.Products.name == test_product.get("name"))
+    
+    new_prod_id = result.one().id
+
+    api_result = api.get_single_product_info(session, new_prod_id)
+
+    assert api_result[1] == 200
+    assert api_result[0].get("name") == test_product.get("name")
+    assert api_result[0].get("price") == test_product.get("price")

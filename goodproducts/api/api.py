@@ -22,8 +22,8 @@ def add_new_product(session, name, price):
     # TO-DO: type validation - done in WTForm?
 
     if product_exists(session, name):
-        return (204, "Product ('{}', {}) already exists in db".format(
-            name, price))
+        return ("Product ('{}', {}) already exists in db".format(
+            name, price), 204)
 
     try:
         product_obj = models.Products(name=name,
@@ -31,11 +31,13 @@ def add_new_product(session, name, price):
         session.add(product_obj)
         session.commit()
     except sa.exc.DataError as exc:
-        return (400, "DB error when adding product ('{}', {})".format(
-            name, price))
+        return ("DB error when adding product ('{}', {})".format(
+            name, price), 400)
 
-    return (201, "Product ('{}', {}) added.".format(
-        name, price))
+    product = session.query(models.Products).filter(models.Products.name == name).one()
+
+    return ("Product ('{}', {}) added with id={}.".format(
+        product.name, product.price, product.id), 201)
 
 
 def get_list_of_products(session):
@@ -60,8 +62,8 @@ def product_exists(session, name):
 def get_single_product_info(session, prod_id):
     result = session.query(models.Products).filter(models.Products.id == prod_id)
     if result.count() == 1:
-        return (200, product_to_dict(result.one()))
+        return (product_to_dict(result.one()), 200)
     elif result.count() == 0:
-        return (204, "Product id={} does not exist in the DB.".format(prod_id))
+        return ("Product id={} does not exist in the DB.".format(prod_id), 204)
     else:
-        return (204, "Product id={} returns multiple products DB. That's mental.".format(prod_id))
+        return ("Product id={} returns multiple products DB. That's mental.".format(prod_id), 204)
