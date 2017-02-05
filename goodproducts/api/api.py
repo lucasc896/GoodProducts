@@ -21,12 +21,11 @@ def add_new_product(session, name, price):
       duplicates)
     """
 
-    # TO-DO: type validation
+    # TO-DO: type validation - done in WTForm?
 
     if product_exists(session, name):
-        print("Product (name: {}, price: {}) already exists in db".format(
+        return (204, "Product ('{}', {}) already exists in db".format(
             name, price))
-        return (204, 'Product already exists')
 
     try:
         product_obj = models.Products(name=name,
@@ -34,10 +33,10 @@ def add_new_product(session, name, price):
         session.add(product_obj)
         session.commit()
     except sa.exc.DataError as exc:
-        return (400, 'DB error when adding product ({}, {})'.format(
+        return (400, "DB error when adding product ('{}', {})".format(
             name, price))
 
-    return (201, 'Product ({}, {}) added.'.format(
+    return (201, "Product ('{}', {}) added.".format(
         name, price))
 
 

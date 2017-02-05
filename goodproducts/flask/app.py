@@ -13,6 +13,15 @@ GOODPRODUCTS_DB_URL = os.environ.get('GOODPRODUCTS_DB_URL', 'mysql://root@localh
 SESSION = get_session(GOODPRODUCTS_DB_URL)
 
 
+class ProductForm(Form):
+    """
+    WTForm for POST form data for new products
+    """
+    name = StringField('name', validators=[validators.Length(min=1, max=64), validators.DataRequired()])
+    price = DecimalField('price', validators=[validators.NumberRange(min=1.), validators.DataRequired()])
+
+# import pdb; pdb.set_trace()
+
 @app.route('/products', methods=['GET'])
 def list_all_products():
     return jsonify(api.get_list_of_products(SESSION))
@@ -25,15 +34,22 @@ def list_single_product():
 
 @app.route('/product', methods=['POST'])
 def add_product():
-    print(request.headers)
-    if request.headers['Content-Type'] == 'text/plain':
-        return "Text Message: " + request.data
-    elif request.headers['Content-Type'] == 'application/json':
-        new_product_data = ujson.dumps(request.json)
-    elif request.headers['Content-Type'] == "multipart/form-data":
-        print(request.form)
+    if request.headers['Content-Type'] == "multipart/form-data":
+        # TO-DO: something cool here
         1/0
     elif request.headers['Content-Type'] == "application/x-www-form-urlencoded":
+        
+        product_form = ProductForm(request.form)
 
-    print("nothing")
-    return ""
+        if product_form.validate():
+            response = api.add_new_product(SESSION,
+                                           product_form.data.get('name'),
+                                           product_form.data.get('price'))
+        else:
+            # abort
+            print("Invalid Form Data")
+
+    if response:
+        code, msg = response
+        return msg
+    return "nothing"
