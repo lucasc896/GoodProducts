@@ -60,7 +60,7 @@ def product_exists(session, name):
 def get_single_product_info(session, prod_id):
     result = session.query(models.Products).filter(models.Products.id == prod_id)
     if result.count() == 1:
-        return (200, result.one())
+        return (200, product_to_dict(result.one()))
     elif result.count() == 0:
         return (204, "Product id={} does not exist in the DB.".format(prod_id))
     else:

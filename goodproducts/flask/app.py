@@ -20,7 +20,6 @@ class ProductForm(Form):
     name = StringField('name', validators=[validators.Length(min=1, max=64), validators.DataRequired()])
     price = DecimalField('price', validators=[validators.NumberRange(min=1.), validators.DataRequired()])
 
-# import pdb; pdb.set_trace()
 
 @app.route('/products', methods=['GET'])
 def list_all_products():
@@ -28,8 +27,8 @@ def list_all_products():
 
 
 @app.route('/product/<int:articleid>', methods=['GET'])
-def list_single_product():
-    pass
+def list_single_product(articleid):
+    return jsonify(api.get_single_product_info(SESSION, articleid))
 
 
 @app.route('/product', methods=['POST'])
