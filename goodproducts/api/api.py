@@ -10,8 +10,6 @@ def product_to_dict(product):
     """
     keys = ['id', 'name', 'price']
     return {key:product.__dict__.get(key) for key in keys}
-    # d = {key:product.__dict__.get(key) for key in keys}
-    # return ujson.dumps(d)
 
 
 def add_new_product(session, name, price):
@@ -57,3 +55,13 @@ def product_exists(session, name):
     """
     result = session.query(models.Products).filter(models.Products.name == name)
     return bool(result.count())
+
+
+def get_single_product_info(session, prod_id):
+    result = session.query(models.Products).filter(models.Products.id == prod_id)
+    if result.count() == 1:
+        return (200, result.one())
+    elif result.count() == 0:
+        return (204, "Product id={} does not exist in the DB.".format(prod_id))
+    else:
+        return (204, "Product id={} returns multiple products DB. That's mental.".format(prod_id))

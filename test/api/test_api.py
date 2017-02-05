@@ -43,13 +43,19 @@ def test_product_exists(session):
 
 
     assert api.product_exists(session,
-                              test_product.get("name"),
-                              test_product.get("price"))
+                              test_product.get("name"))
 
 
 def test_add_new_product(session):
-    api.add_new_product(session, 'test1', 'fa')
+    test_product = TEST_PRODUCTS[0]
 
+    api.add_new_product(session,
+                        test_product.get("name"),
+                        test_product.get("price"))
 
-# def test_add_new_product_bad_params(session):
-#     return True
+    result = session.query(models.Products)
+
+    assert result.count() == 1
+
+    assert result[0].name == test_product.get("name")
+    assert result[0].price == test_product.get("price")
