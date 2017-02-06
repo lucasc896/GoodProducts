@@ -15,7 +15,6 @@ def product_to_dict(product):
     d = {key:product.__dict__.get(key) for key in keys}
     # hack to get around json serializing Decimal type
     if isinstance(d.get('price'), decimal.Decimal):
-        import pdb; pdb.set_trace()
         d['price'] = float(d.get('price'))
     return d
 

@@ -48,6 +48,18 @@ export FLASK_DEBUG=1;
 Access the API via `http://127.0.0.1:5000/<endpoint>`
 
 
+## Running tests
+Some unit tests are written using pytest. They hit the test mysql db instance, stripping down and rebuilding it for each test.
+
+Test environment requirements are installed using:
+
+`pip install -r requirements-test.txt`
+
+and ran with:
+
+`py.test test -v`
+
+
 ## API info
 
 The following endpoints are currently implemented:
