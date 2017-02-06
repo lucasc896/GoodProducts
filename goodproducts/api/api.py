@@ -27,8 +27,6 @@ def add_new_product(session, name, price):
       duplicates)
     """
 
-    # TO-DO: type validation - done in WTForm?
-
     if product_exists(session, name):
         return ("Product ('{}', {}) already exists in db".format(
             name, price), 204)
@@ -38,7 +36,7 @@ def add_new_product(session, name, price):
                                       price=price)
         session.add(product_obj)
         session.commit()
-    except sa.exc.OperationalError as exc:
+    except (sa.exc.OperationalError, sa.exc.DataError):
         return ("DB error when adding product ('{}', {})".format(
             name, price), 400)
 
@@ -68,6 +66,9 @@ def product_exists(session, name):
 
 
 def get_single_product_info(session, prod_id):
+    """
+    return product info corresponding to prod_id
+    """
     result = session.query(models.Products).filter(models.Products.id == prod_id)
     if result.count() == 1:
         return (product_to_dict(result.one()), 200)
@@ -78,8 +79,10 @@ def get_single_product_info(session, prod_id):
 
 
 def delete_single_product(session, prod_id):
+    """
+    delete a product with the corresponding prod_id
+    """
     # do delete
     # no need to check if exists
-
     # check if item is deleted?
-    return ("", 200)
+    return ("", 404)

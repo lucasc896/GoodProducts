@@ -16,6 +16,9 @@ SESSION = get_session(GOODPRODUCTS_DB_URL)
 
 @app.errorhandler(404)
 def product_not_found(error=None):
+    """
+    errorhandler for api calls to non-existent products
+    """
     message = {
             'status': 404,
             'message': 'Product not found: ' + error,
@@ -28,6 +31,9 @@ def product_not_found(error=None):
 
 @app.errorhandler(404)
 def bad_request(error=None):
+    """
+    errorhandler for generic bad requests
+    """
     message = {
             'status': 404,
             'message': 'Bad request: ' + error,
@@ -40,11 +46,17 @@ def bad_request(error=None):
 
 @app.route('/products', methods=['GET'])
 def list_all_products():
+    """
+    endpoint for listing json of all products
+    """
     return jsonify(api.get_list_of_products(SESSION))
 
 
 @app.route('/product/<int:productid>', methods=['GET'])
 def list_single_product(productid):
+    """
+    endpoint to return json of a single product with 'productid'
+    """
     result = api.get_single_product_info(SESSION, productid)
     if result[1] == 200:
         return jsonify(result[0])
@@ -56,13 +68,15 @@ def list_single_product(productid):
 
 @app.route('/product', methods=['POST'])
 def add_product():
-
+    """
+    endpoint for adding a single product to the db based on form data
+    """
     if ("multipart/form-data" in request.headers['Content-Type'] 
         or request.headers['Content-Type'] == "application/x-www-form-urlencoded"):
 
-
         product_form = helpers.ProductForm(request.form)
 
+        # use wtform data validation
         if product_form.validate():
             response = api.add_new_product(SESSION,
                                            product_form.data.get('name'),
@@ -77,7 +91,10 @@ def add_product():
 
 
 @app.route('/product/<int:productid>', methods=['DELETE'])
-def delete_product():
+def delete_product(productid):
+    """
+    not implemented (yet!)
+    """
     result = api.delete_single_product(SESSION, productid)
     if result[1] == 200: #check is right code
         return "Product id={} deleted.".format(productid)

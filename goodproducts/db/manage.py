@@ -7,6 +7,7 @@ import sqlalchemy as sa
 from goodproducts.db import models
 from sqlalchemy.orm import sessionmaker
 
+
 _TEST_SESSION = None
 
 GOODPRODUCTS_TEST_DB_URL = os.environ.get('GOODPRODUCTS_TEST_DB_URL', 'mysql://root@localhost/test_goodproducts_db')
@@ -19,7 +20,8 @@ INITIAL_PRODUCTS = [
 
 
 def get_session(url):
-    """Return a non scoped database session
+    """
+    Return a non scoped database session
     """
     Session = sessionmaker()
     engine = sa.create_engine(url)
@@ -28,6 +30,9 @@ def get_session(url):
 
 
 def get_test_session(url=GOODPRODUCTS_TEST_DB_URL):
+    """
+    return a non scoped session pointing at the test db
+    """
     if _TEST_SESSION is None:
         global _TEST_SESSION
         engine = sa.create_engine(url)
@@ -43,22 +48,32 @@ def _get_medatada(url=GOODPRODUCTS_TEST_DB_URL):
 
 
 def create_all(url=GOODPRODUCTS_TEST_DB_URL):
+    """
+    leverage the 'create_all' function to generate blank tables/models
+    """
     _get_medatada(url).create_all()
 
 
 def drop_all(url=GOODPRODUCTS_TEST_DB_URL):
+    """
+    leverage the 'create_all' function to delete all tables/models
+    """
     md = _get_medatada(url)
     session = get_test_session(url)
     for table in reversed(md.sorted_tables):
         try:
             session.execute(table.delete())
         except Exception as exc:
+            #TO-DO: add logging rather than fail silently
             pass
 
     session.commit()
 
 
 def initialise_data(url=GOODPRODUCTS_TEST_DB_URL):
+    """
+    insert initial product data to products table
+    """
     session = get_session(url)
     for product in INITIAL_PRODUCTS:
         prod_obj = models.Products(name = product.get("name"),
