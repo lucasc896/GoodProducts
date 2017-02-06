@@ -33,6 +33,18 @@ def product_not_found(error=None):
     return resp
 
 
+@app.errorhandler(404)
+def bad_request(error=None):
+    message = {
+            'status': 404,
+            'message': 'Bad request: ' + error,
+    }
+    resp = jsonify(message)
+    resp.status_code = 404
+
+    return resp
+
+
 @app.route('/products', methods=['GET'])
 def list_all_products():
     return jsonify(api.get_list_of_products(SESSION))
@@ -51,11 +63,11 @@ def list_single_product(articleid):
 
 @app.route('/product', methods=['POST'])
 def add_product():
-    if request.headers['Content-Type'] == "multipart/form-data":
-        # TO-DO: something cool here
-        1/0
-    elif request.headers['Content-Type'] == "application/x-www-form-urlencoded":
-        
+
+    if ("multipart/form-data" in request.headers['Content-Type'] 
+        or request.headers['Content-Type'] == "application/x-www-form-urlencoded"):
+
+
         product_form = ProductForm(request.form)
 
         if product_form.validate():
@@ -63,10 +75,10 @@ def add_product():
                                            product_form.data.get('name'),
                                            product_form.data.get('price'))
         else:
-            # abort
-            print("Invalid Form Data")
+            return bad_request("Invalid Form Data")
 
     if response:
         return response[0]
 
-    return make_response(400, "nothing happened. oops.")
+    return bad_request("Error. Nothing happened.")
+

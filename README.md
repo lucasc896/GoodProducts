@@ -58,4 +58,9 @@ The following endpoints are currently implemented:
 
 
 ## Notes
-*have ignored the currency in the Price column (looks OK to do from a brief look at tests.postman)
+* have ignored the currency in the Price column (looks OK to do from a brief look at tests.postman)
+
+
+## TO-DO
+* return proper flask.response objects for each request
+* strong er type validation for form data
