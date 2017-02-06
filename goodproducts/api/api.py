@@ -75,3 +75,11 @@ def get_single_product_info(session, prod_id):
         return ("id={} does not exist in the DB.".format(prod_id), 404)
     else:
         return ("Product id={} returns multiple products DB. That's mental.".format(prod_id), 204)
+
+
+def delete_single_product(session, prod_id):
+    # do delete
+    # no need to check if exists
+
+    # check if item is deleted?
+    return ("", 200)

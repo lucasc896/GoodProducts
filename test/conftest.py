@@ -1,6 +1,7 @@
 import pytest
 
 from goodproducts.db.manage import create_all, drop_all, get_test_session
+from goodproducts.db import models
 
 
 @pytest.fixture(scope='function')
@@ -18,3 +19,11 @@ def session(request):
 
     request.addfinalizer(teardown)
     return get_test_session()
+
+
+# @pytest.fixture(scope='function')
+# def add_product(session, product_dict):
+#     product_object = models.Products(name=test_product.get("name"),
+#                                      price=test_product.get("price"))
+#     session.add(product_object)
+#     session.flush()

@@ -4,21 +4,14 @@ import ujson
 
 from goodproducts.api import api
 from goodproducts.db.manage import get_session
+from goodproducts.flask import helpers
 from flask import Flask, request, jsonify, make_response
-from wtforms import Form, StringField, DecimalField, validators
+# from wtforms import Form, StringField, DecimalField, validators
 
 app = Flask("goodproducts")
 
 GOODPRODUCTS_DB_URL = os.environ.get('GOODPRODUCTS_DB_URL', 'mysql://root@localhost/goodproducts')
 SESSION = get_session(GOODPRODUCTS_DB_URL)
-
-
-class ProductForm(Form):
-    """
-    WTForm for POST form data for new products
-    """
-    name = StringField('name', validators=[validators.Length(min=1, max=64), validators.DataRequired()])
-    price = DecimalField('price', validators=[validators.NumberRange(min=1.), validators.DataRequired()])
 
 
 @app.errorhandler(404)
@@ -50,9 +43,9 @@ def list_all_products():
     return jsonify(api.get_list_of_products(SESSION))
 
 
-@app.route('/product/<int:articleid>', methods=['GET'])
-def list_single_product(articleid):
-    result = api.get_single_product_info(SESSION, articleid)
+@app.route('/product/<int:productid>', methods=['GET'])
+def list_single_product(productid):
+    result = api.get_single_product_info(SESSION, productid)
     if result[1] == 200:
         return jsonify(result[0])
     elif result[1] == 404:
@@ -68,7 +61,7 @@ def add_product():
         or request.headers['Content-Type'] == "application/x-www-form-urlencoded"):
 
 
-        product_form = ProductForm(request.form)
+        product_form = helpers.ProductForm(request.form)
 
         if product_form.validate():
             response = api.add_new_product(SESSION,
@@ -82,3 +75,13 @@ def add_product():
 
     return bad_request("Error. Nothing happened.")
 
+
+@app.route('/product/<int:productid>', methods=['DELETE'])
+def delete_product():
+    result = api.delete_single_product(SESSION, productid)
+    if result[1] == 200: #check is right code
+        return "Product id={} deleted.".format(productid)
+    elif result[1] == 204:
+        return product_not_found(result[0])
+    else:
+        return bad_request("Bad times.")

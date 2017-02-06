@@ -100,3 +100,7 @@ def test_get_single_product_info(session):
     assert api_result[1] == 200
     assert api_result[0].get("name") == test_product.get("name")
     assert api_result[0].get("price") == test_product.get("price")
+
+
+def test_delete_single_product(session):
+    assert True
