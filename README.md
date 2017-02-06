@@ -5,8 +5,11 @@
 
 ## Install
 
+This codebase should be ran within a python3 virtual environment. Assuming virtualenvwrapper is used, and python3 installed:
+
 ```
 cd GoodProducts;
+mkvirtualenv -p $(which python3) GoodProducts
 pip install -r requirements.txt;
 pip install -e .
 ```
