@@ -38,7 +38,7 @@ def test_product_exists(session):
     result = session.query(models.Products)
     assert result.count() == 1
     assert result[0].name == test_product.get("name")
-    assert result[0].price == test_product.get("price")
+    assert float(result[0].price) == test_product.get("price")
 
 
 
@@ -60,7 +60,7 @@ def test_add_new_product(session):
     assert result.count() == 1
 
     assert result[0].name == test_product.get("name")
-    assert result[0].price == test_product.get("price")
+    assert float(result[0].price) == test_product.get("price")
 
 
 def test_add_new_product_already_exists(session):

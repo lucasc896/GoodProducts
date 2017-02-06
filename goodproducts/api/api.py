@@ -38,7 +38,7 @@ def add_new_product(session, name, price):
                                       price=price)
         session.add(product_obj)
         session.commit()
-    except sa.exc.DataError as exc:
+    except sa.exc.OperationalError as exc:
         return ("DB error when adding product ('{}', {})".format(
             name, price), 400)
 
