@@ -1,3 +1,5 @@
+import decimal
+
 import sqlalchemy as sa
 
 from goodproducts.db import models
@@ -9,7 +11,14 @@ def product_to_dict(product):
     relevant params
     """
     keys = ['id', 'name', 'price']
-    return {key:product.__dict__.get(key) for key in keys}
+    # import pdb; pdb.set_trace()
+    d = {key:product.__dict__.get(key) for key in keys}
+    # hack to get around json serializing Decimal type
+    if isinstance(d.get('price'), decimal.Decimal):
+        import pdb; pdb.set_trace()
+        d['price'] = float(d.get('price'))
+    return d
+
 
 
 def add_new_product(session, name, price):

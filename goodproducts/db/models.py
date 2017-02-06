@@ -23,7 +23,7 @@ class Products(Base):
         doc="Name of product")
 
     price = sa.Column(
-        'Price', 
-        sa.Numeric(2),
+        'Price',
+        sa.Numeric(5, 2),
         nullable=False,
         doc="Price of product")
