@@ -21,6 +21,18 @@ class ProductForm(Form):
     price = DecimalField('price', validators=[validators.NumberRange(min=1.), validators.DataRequired()])
 
 
+@app.errorhandler(404)
+def product_not_found(error=None):
+    message = {
+            'status': 404,
+            'message': 'Product not found: ' + error,
+    }
+    resp = jsonify(message)
+    resp.status_code = 404
+
+    return resp
+
+
 @app.route('/products', methods=['GET'])
 def list_all_products():
     return jsonify(api.get_list_of_products(SESSION))
@@ -31,6 +43,8 @@ def list_single_product(articleid):
     result = api.get_single_product_info(SESSION, articleid)
     if result[1] == 200:
         return jsonify(result[0])
+    elif result[1] == 404:
+        return product_not_found(result[0])
     else:
         return make_response(*result)
 

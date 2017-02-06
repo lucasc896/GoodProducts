@@ -2,3 +2,4 @@ my.TODO
 *.pyc
 .env
 .cache/
+*.egg-info*

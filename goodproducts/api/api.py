@@ -64,6 +64,6 @@ def get_single_product_info(session, prod_id):
     if result.count() == 1:
         return (product_to_dict(result.one()), 200)
     elif result.count() == 0:
-        return ("Product id={} does not exist in the DB.".format(prod_id), 204)
+        return ("id={} does not exist in the DB.".format(prod_id), 404)
     else:
         return ("Product id={} returns multiple products DB. That's mental.".format(prod_id), 204)

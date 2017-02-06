@@ -11,6 +11,12 @@ _TEST_SESSION = None
 
 GOODPRODUCTS_TEST_DB_URL = os.environ.get('GOODPRODUCTS_TEST_DB_URL', 'mysql://root@localhost/test_goodproducts_db')
 
+INITIAL_PRODUCTS = [
+    {"id": 1, "name": "Lavender heart", "price": 9.25},
+    {"id": 2, "name": "Personalised cufflinks", "price": 45.00},
+    {"id": 1, "name": "Kids T-shirt", "price": 19.95}
+]
+
 
 def get_session(url):
     """Return a non scoped database session
@@ -52,6 +58,15 @@ def drop_all(url=GOODPRODUCTS_TEST_DB_URL):
     session.commit()
 
 
+def initialise_data(url=GOODPRODUCTS_TEST_DB_URL):
+    session = get_session(url)
+    for product in INITIAL_PRODUCTS:
+        prod_obj = models.Products(name = product.get("name"),
+                                   price = product.get("price"))
+        session.add(prod_obj)
+    session.commit()
+
+
 def parse_arguments():
     import argparse
     parser = argparse.ArgumentParser(description='Create or destroy the needed tables')
@@ -63,6 +78,11 @@ def parse_arguments():
     parser.add_argument('-d', '--dburl',
                         help='SQLAlchemy URL',
                         default=GOODPRODUCTS_TEST_DB_URL)
+
+    parser.add_argument('-i', '--initialise',
+                        help='Fill table with initial data',
+                        action='store_true',
+                        default=False)
 
     return parser.parse_args()
 
@@ -78,6 +98,9 @@ def main():
     if args.mode == 'create':
         _confirm("create new tables")
         create_all(args.dburl)
+    
+    if args.initialise:
+        initialise_data(args.dburl)
 
     elif args.mode == 'drop':
         _confirm("drop new tables")

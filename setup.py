@@ -14,13 +14,12 @@ setup(
     author = "Chris Lucas",
     author_email = "lucasc896@gmail.com",
     description = ("RESTful API for the best products ever."),
-    packages=['tests'],
-    long_description=read('README'),
+    long_description=read('README.md'),
     url="https://github.com/lucasc896/really_good_products_api",
     packages=find_packages(exclude=['tests', 'tests.*']),
     entry_points={
-        # "console_scripts": [
-        #     "manage-db=handup.models.manage:main",
-        # ]
+        "console_scripts": [
+            "manage-db=goodproducts.db.manage:main",
+        ]
     }
 )

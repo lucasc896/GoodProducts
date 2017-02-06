@@ -10,7 +10,7 @@ class Products(Base):
     __tablename__ = 'products'
     __sequence_name__ = 'products_product_code_sequence'
 
-    sequence = sa.Sequence(name=__sequence_name__)
+    sequence = sa.Sequence(name=__sequence_name__, start=1)
 
     id = sa.Column(sa.Integer,
                    sequence,
