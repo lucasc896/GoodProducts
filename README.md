@@ -25,7 +25,7 @@ export GOODPRODUCTS_DB_URL='mysql://chrislucas@localhost/goodproducts';
 export GOODPRODUCTS_TEST_DB_URL='mysql://chrislucas@localhost/test_goodproducts_db';
 ```
 
-Initialise both DBs by running the manage-db script with the 'create' option:
+Initialise both DBs by running the manage-db script with the 'create' option for both, and in addition the 'initialise' option for the production db:
 
 ```
 # Test db
@@ -38,8 +38,10 @@ manage-db -m create -i -d $GOODPRODUCTS_DB_URL
 ### Setup Flask
 From the base directory:
 
-`export FLASK_APP=goodproducts/flask/app.py;`
-`export FLASK_DEBUG=1;`
+```
+export FLASK_APP=goodproducts/flask/app.py;
+export FLASK_DEBUG=1;
+```
 
 `python -m flask run`
 
@@ -50,9 +52,9 @@ Access the API via `http://127.0.0.1:5000/<endpoint>`
 
 The following endpoints are currently implemented:
 
-*GET /products – A list of products, names, and prices in JSON format.  
-*POST /product – Create a new product using posted form data
-*GET /product/{product_id} – Return a single product in JSON format.
+* GET /products – A list of products, names, and prices in JSON format.  
+* POST /product – Create a new product using posted form data
+* GET /product/{product_id} – Return a single product in JSON format.
 
 
 ## Notes
